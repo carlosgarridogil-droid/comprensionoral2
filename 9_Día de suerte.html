@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Día de suerte - Juego de Lectura 2º Primaria</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&family=Lexend:wght@400;700&display=swap');
+
+        :root {
+            --primary: #0277BD;      /* Azul principal */
+            --secondary: #0288D1;    /* Azul secundario */
+            --accent: #FBC02D;       /* Amarillo alegría */
+            --bg: #E1F5FE;
+            --text: #01579B;
+            --border: #0277BD;
+            --green-ok: #388E3C;
+            --red-bad: #C62828;
+            --card-bg: #FFFFFF;
+            --font-family: 'Nunito', sans-serif;
+            --font-scale: 1;
+            --line-height: 1.6;
+            --bg-reading: #FFFFFF;
+        }
+
+        /* MODO SEPIA DUA */
+        body.mode-sepia {
+            --bg: #F5EBE0;
+            --card-bg: #FFFDF0;
+            --text: #3E2723;
+            --border: #5D4037;
+            --bg-reading: #FAF3E0;
+        }
+
+        /* FUENTE ACCESIBLE DUA */
+        body.font-lexend {
+            font-family: 'Lexend', sans-serif !important;
+        }
+
+        /* BAJO ESTÍMULO DUA */
+        body.low-stimulus * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg);
+            background-image: radial-gradient(#B3E5FC 20%, transparent 20%),
+                              radial-gradient(#B3E5FC 20%, transparent 20%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            user-select: none;
+            font-size: calc(1rem * var(--font-scale));
+        }
+
+        #game-container {
+            width: 95%;
+            max-width: 920px;
+            background: var(--card-bg);
+            border-radius: 25px;
+            box-shadow: 0 10px 0 #01579B, 0 20px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+            border: 6px solid var(--border);
+            z-index: 10;
+            margin: 20px 0;
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* CABECERA PERMANENTE CON BOTÓN DUA */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: #B3E5FC;
+            border-bottom: 4px solid var(--border);
+        }
+
+        .dua-btn-trigger {
+            background: #8E24AA;
+            color: white;
+            border: 3px solid #4A148C;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #4A148C;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dua-btn-trigger:hover {
+            transform: scale(1.05);
+            background: #AB47BC;
+        }
+
+        /* PANTALLA DE INICIO */
+        #start-screen {
+            padding: 30px 40px 40px 40px;
+            text-align: center;
+            background: linear-gradient(180deg, #FFFFFF 0%, #E1F5FE 100%);
+        }
+
+        .header-tags {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .tag {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+            font-size: 1.1rem;
+            transform: rotate(-4deg);
+            border: 2px solid white;
+        }
+
+        .tag-version {
+            background: #0277BD;
+            color: white;
+            transform: rotate(4deg);
+            border: 2px solid var(--accent);
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.2rem;
+            color: var(--primary);
+            text-shadow: 3px 3px 0 #81D4FA;
+            margin: 10px 0;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #01579B;
+            background: var(--accent);
+            display: inline-block;
+            padding: 8px 22px;
+            border-radius: 20px;
+            margin-top: 5px;
+            border: 2px dashed var(--primary);
+            text-transform: uppercase;
+        }
+
+        .hero-image {
+            font-size: 5.5rem;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.2));
+        }
+
+        .credits-top {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            font-weight: 800;
+            margin-bottom: 15px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .credits-bottom {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            font-weight: 800;
+            margin-top: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .credits-author {
+            font-size: 0.95rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-top: 6px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .btn-start {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 50px;
+            font-size: 1.8rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #01579B;
+            transition: transform 0.1s;
+            border: 4px solid var(--secondary);
+            text-transform: uppercase;
+            display: inline-block;
+            margin: 8px;
+        }
+
+        .btn-start:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #01579B;
+        }
+
+        /* MODAL DE MEDIDAS DUA */
+        #dua-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dua-modal-card {
+            background: #FFFDF0;
+            width: 90%;
+            max-width: 820px;
+            max-height: 90vh;
+            border-radius: 25px;
+            border: 6px solid #8E24AA;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+            animation: modalPop 0.3s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .dua-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px dashed #8E24AA;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dua-modal-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: #4A148C;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .dua-close-btn {
+            background: #E53935;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #B71C1C;
+        }
+
+        .dua-info-banner {
+            background: #F3E5F5;
+            border-left: 6px solid #8E24AA;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #4A148C;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .dua-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .dua-table th {
+            background: #8E24AA;
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .dua-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #E0E0E0;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .dua-table tr:hover {
+            background: #F8F0FC;
+        }
+
+        .badge-profile {
+            background: #E1BEE7;
+            color: #4A148C;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        /* TOGGLE SWITCHES */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #CCC; transition: .3s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #8E24AA; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* LECTURA Y PANTALLA JUEGO */
+        #reading-screen, #game-screen, #end-screen {
+            display: none;
+            padding: 30px;
+        }
+
+        #reading-screen {
+            background: var(--bg-reading);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .reading-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .reading-content {
+            font-size: calc(1.15rem * var(--font-scale));
+            line-height: var(--line-height);
+            color: var(--text);
+            flex-grow: 1;
+        }
+
+        .vocab-box {
+            background-color: #FFFDE7;
+            border: 2px dashed #FBC02D;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin: 20px 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .grammar-legend {
+            width: 210px;
+            background: #E1F5FE;
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            flex-shrink: 0;
+        }
+
+        .legend-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .legend-item:hover { background: #B3E5FC; }
+
+        .circle {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
+        .legend-text {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .highlight-yellow { background-color: #FFF59D; border-radius: 3px; }
+        .highlight-red { background-color: #FFCDD2; border-radius: 3px; }
+        .highlight-blue-light { background-color: #B3E5FC; border-radius: 3px; }
+        .highlight-green-light { background-color: #C8E6C9; border-radius: 3px; }
+        .highlight-gray { background-color: #E0E0E0; border-radius: 3px; }
+        .highlight-adverb-red { background-color: #E53935; color: white; border-radius: 3px; }
+        .highlight-blue-strong { background-color: #1E88E5; color: white; border-radius: 3px; }
+
+        .reading-audio-highlight { background-color: #FFF59D; border-radius: 4px; border-bottom: 2px solid #FBC02D; }
+
+        /* PREGUNTAS */
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 2px solid #90A4AE;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease-out;
+        }
+
+        .question-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: #E1F5FE;
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .question-title {
+            font-size: calc(1.3rem * var(--font-scale));
+            color: var(--text);
+            font-weight: 800;
+            text-align: left;
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+
+        .audio-btn {
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 0 #F57F17;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+        }
+        .audio-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #F57F17;
+        }
+
+        .btn-clue {
+            background: #FBC02D;
+            color: #3E2723;
+            border: none;
+            padding: 0 16px;
+            height: 48px;
+            border-radius: 24px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #F57F17;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-clue:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #F57F17;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        @media (min-width: 600px) {
+             .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #81D4FA;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: calc(1.1rem * var(--font-scale));
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background: #B3E5FC;
+            border-color: var(--primary);
+        }
+
+        .option-btn.correct {
+            background: var(--green-ok) !important;
+            border-color: #1B5E20 !important;
+            color: white;
+        }
+
+        .option-btn.wrong {
+            background: var(--red-bad) !important;
+            border-color: #B71C1C !important;
+            color: white;
+        }
+
+        #clue-box {
+            display: none;
+            background: #FFF9C4;
+            border: 2px dashed #FBC02D;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #5D4037;
+            text-align: left;
+        }
+
+        #next-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #01579B;
+            margin: 20px auto 0 auto;
+            display: none;
+        }
+
+        #feedback-msg {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            min-height: 30px;
+            text-align: center;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* RESULTADOS */
+        .score-display {
+            font-size: 4rem;
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary);
+            margin: 10px 0;
+            text-shadow: 2px 2px 0 var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- BARRA SUPERIOR DE ACCESIBILIDAD PERMANENTE -->
+        <div class="top-navbar">
+            <span style="font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 1.1rem;">
+                🐱 DÍA DE SUERTE
+            </span>
+            <button class="dua-btn-trigger" onclick="openDuaModal()">
+                ⚙️ Medidas DUA
+            </button>
+        </div>
+
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- PANTALLA DE INICIO -->
+        <div id="start-screen">
+            <div class="header-tags">
+                <div class="tag">2º PRIMARIA</div>
+                <div class="tag tag-version">UNIDAD 9</div>
+            </div>
+            
+            <h1>Día de suerte</h1>
+            
+            <div class="subtitle">LENGUA CASTELLANA Y LITERATURA • LECTURA</div>
+            
+            <div class="hero-image">🐱 📦 ✉️</div>
+            
+            <div class="credits-top">2º Educación Primaria</div>
+            
+            <button class="btn-start" onclick="startGame()">¡JUGAR!</button>
+            <br>
+            <button class="btn-start" style="background: var(--accent); border-color: var(--primary); color: #333;" onclick="showReadingOnly()">LECTURA</button>
+            
+            <div class="credits-bottom">Un cuento de Allan Ahlberg</div>
+            <div class="credits-author">Aplicación didáctica desarrollada por Carlos Garrido</div>
+        </div>
+
+        <!-- PANTALLA DE LECTURA -->
+        <div id="reading-screen">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <h2 style="font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--primary); margin: 0;">Día de suerte</h2>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="audio-btn" style="background: #90A4AE; box-shadow: 0 4px 0 #455A64;" onclick="goHome()" title="Ir al inicio">🏠</button>
+                    <button class="audio-btn" onclick="readFullText()" title="Escuchar lectura completa">🔊</button>
+                    <button class="audio-btn" id="pause-reading-btn" style="background: #FF9800; box-shadow: 0 4px 0 #E65100;" onclick="togglePauseReading()" title="Pausar / Reanudar lectura">⏸️</button>
+                </div>
+            </div>
+
+            <div class="reading-layout">
+                <div id="reading-text-container" class="reading-content">
+                    <p>Una mañana del mes de mayo, la señora Gaskitt se levantó. Bajó las escaleras y llenó el plato de Horacio con Ratoncitos Crujientes. A un amigo de Horacio, que estaba de visita, también le puso su <span class="syllable-target">ración</span>.</p>
+                    <p>La señora Gaskitt despertó a sus mellizos, Gloria y Gus, les preparó el desayuno y los mandó al colegio. Luego, leyó el periódico y bebió una taza de té. Cuando el cartero llamó a la puerta, la señora Gaskitt abrió entusiasmada... ¡y le dio un beso!</p>
+                    <p>¿Y qué pasa con el señor Gaskitt? ¡Nada! El señor Gaskitt era el cartero.</p>
+                    <p>Como aún era pronto para ponerse al volante de su taxi, la mujer decidió leer las cartas. Había una postal de la abuela Gaskitt, que estaba de vacaciones en Italia, una cita del veterinario para Horacio... y esta otra carta.</p>
+                    <p>—¡Vaya! —exclamó—. Debe de ser mi día de suerte.</p>
+                    <p>Media hora más tarde, una furgoneta se detuvo delante de su casa. Traía el premio: cientos de cajas de Ratoncitos Crujientes.</p>
+                    <p>—Lo único que hice fue contestar a una pregunta y escribir un <span class="syllable-target">eslogan</span> para un anuncio: ¡RATONCITOS CRUJIENTES PARA LOS VALIENTES! —le explicó la señora Gaskitt al repartidor.</p>
+                    <p>—Hoy debe de ser su día de suerte —le dijo él.</p>
+                    <p>El premio llenó la cocina de cajas. El amigo de Horacio estaba impresionado y no paraba de <span class="syllable-target">ronronear</span>. Y Horacio también.</p>
+                    <p>«Hoy debe de ser mi día de suerte», pensó el gato.</p>
+                    <p>La noticia se extendió rápidamente. Los otros amigos de Horacio miraban desde la calle a través de la ventana.</p>
+                    <p>—¡Creo que esta comida me va a durar un año! —exclamó Horacio.</p>
+                    <p>—Sí... O medio año si se la comen dos gatos —soltó su amigo.</p>
+                    <p>—Sí —dijo Horacio.</p>
+                    <p>—O un mes si somos doce gatos —añadió uno de los que miraban desde el exterior.</p>
+                    <p>—Sí.</p>
+                    <p>—O un día si hacemos una fiesta y nos reunimos trescientos sesenta y cinco gatos.</p>
+                    <p>—¡Sííí...!</p>
+                    
+                    <p style="font-size: 0.95rem; font-weight: bold; text-align: right; color: #0288D1; margin-top: 15px;">
+                        ALLAN AHLBERG<br>
+                        <em>La mamá que ganó muchos premios, Loqueleo (adaptación)</em>
+                    </p>
+
+                    <div class="vocab-box">
+                        <strong>Vocabulario de la lectura:</strong><br>
+                        • <strong><span class="syllable-target">ración</span>:</strong> cantidad de comida que se da a animales o personas.<br>
+                        • <strong><span class="syllable-target">eslogan</span>:</strong> frase corta con la que se anuncia un producto.<br>
+                        • <strong><span class="syllable-target">ronronear</span>:</strong> hacer los gatos un ruido parecido a un ronquido cuando están a gusto.
+                    </div>
+                </div>
+
+                <div class="grammar-legend">
+                    <div class="legend-title">ANÁLISIS DE PALABRAS</div>
+                    <div class="legend-item" onclick="toggleGrammar('verbs')">
+                        <div class="circle" style="background: #FFF59D;"></div>
+                        <span class="legend-text">Verbos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('nouns')">
+                        <div class="circle" style="background: #FFCDD2;"></div>
+                        <span class="legend-text">Sustantivos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('adjectives')">
+                        <div class="circle" style="background: #B3E5FC;"></div>
+                        <span class="legend-text">Adjetivos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('articles')">
+                        <div class="circle" style="background: #C8E6C9;"></div>
+                        <span class="legend-text">Artículos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('possessives')">
+                        <div class="circle" style="background: #E0E0E0;"></div>
+                        <span class="legend-text">Posesivos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('adverbs')">
+                        <div class="circle" style="background: #E53935;"></div>
+                        <span class="legend-text">Adverbios</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('prepositions')">
+                        <div class="circle" style="background: #1E88E5;"></div>
+                        <span class="legend-text">Preposiciones</span>
+                    </div>
+                    <div style="margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center;">
+                        <button onclick="clearAllHighlights()" style="cursor:pointer; font-size: 0.75rem; border-radius: 5px; border: 1px solid #ccc; padding: 4px 8px;">Limpiar todo</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="btn-reading-continue" class="btn-start" style="font-size: 1.4rem; padding: 10px 40px;" onclick="startQuestions()">CONTINUAR AL JUEGO</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE JUEGO (PREGUNTAS) -->
+        <div id="game-screen">
+            <div class="header-tags" style="margin-bottom: 5px; justify-content: flex-end;">
+                <span id="q-counter" style="font-weight: bold; color: #01579B; font-size: 0.95rem; transform: none;">Pregunta 1/10</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title-container">
+                    <div id="question-text" class="question-title">Cargando...</div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="audio-btn" style="background: #90A4AE; box-shadow: 0 4px 0 #455A64;" onclick="goHome()" title="Ir al inicio">🏠</button>
+                        <button class="audio-btn" onclick="speakCurrentQuestion()" title="Escuchar pregunta">🔊</button>
+                        <button class="btn-clue" onclick="showAndSpeakClue()" title="Ver y escuchar pista">💡 Pista</button>
+                    </div>
+                </div>
+                
+                <div id="options-container" class="options-grid"></div>
+                
+                <div id="clue-box"></div>
+                <div id="feedback-msg"></div>
+                
+                <button id="next-btn" onclick="nextQuestion()">Siguiente >></button>
+            </div>
+        </div>
+
+        <!-- PANTALLA FINAL -->
+        <div id="end-screen" style="text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0;">¡DÍA DE SUERTE!</h1>
+            <p style="font-size: 1.2rem; margin-top: 5px;">Has completado todas las preguntas sobre la historia de la familia Gaskitt y Horacio.</p>
+            
+            <div class="hero-image" style="font-size: 5rem; margin: 10px 0;">🐱</div>
+            
+            <div class="score-display" id="final-score">0/0</div>
+            
+            <div style="background: #E1F5FE; padding: 15px; border-radius: 12px; display: inline-block; border: 2px dashed #0277BD; font-weight: bold; color: #01579B; margin-top: 10px;">
+                ¡Gran trabajo de comprensión lectora!<br>
+                ¡Hoy también es tu día de suerte!
+            </div>
+            <br><br>
+            <button class="btn-start" style="font-size: 1.5rem; padding: 10px 40px;" onclick="location.reload()">Repetir</button>
+        </div>
+
+    </div>
+
+    <!-- VENTANA MODAL MEDIDAS DUA -->
+    <div id="dua-modal">
+        <div class="dua-modal-card">
+            <div class="dua-modal-header">
+                <h2 class="dua-modal-title">
+                    ⚙ Medidas DUA de Acceso
+                </h2>
+                <button class="dua-close-btn" onclick="closeDuaModal()">×</button>
+            </div>
+
+            <div class="dua-info-banner">
+                Ajusta las medidas de acceso al aprendizaje para adaptar la experiencia a las necesidades del alumnado (TEA, TEL, Dislexia, Baja Visión o Estrés Visual).
+            </div>
+
+            <table class="dua-table">
+                <thead>
+                    <tr>
+                        <th>Función DUA</th>
+                        <th>Herramienta Integrada</th>
+                        <th>Perfil Beneficiado Principal</th>
+                        <th style="text-align: center;">Activar / Configurar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bajo Estímulo</strong></td>
+                        <td>Desactiva animaciones, movimiento y sonido</td>
+                        <td><span class="badge-profile">TEA / TDAH</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-low-stimulus" onchange="toggleLowStimulus(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tamaño/Fuente</strong></td>
+                        <td>Aumenta texto / Fuente <em>Lexend</em></td>
+                        <td><span class="badge-profile">Dislexia / Baja visión</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-lexend" onchange="toggleLexendFont(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modo Sepia</strong></td>
+                        <td>Fondo crema y contraste suave</td>
+                        <td><span class="badge-profile">Dislexia / Estrés visual</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-sepia" onchange="toggleSepiaMode(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Velocidad Audio</strong></td>
+                        <td>Selector de velocidad (0.75× a 1.0×)</td>
+                        <td><span class="badge-profile">TEL / Dislexia</span></td>
+                        <td style="text-align: center;">
+                            <select id="dua-audio-rate" style="padding: 5px 10px; border-radius: 8px; border: 2px solid #8E24AA; font-weight: bold;" onchange="changeAudioRate(this.value)">
+                                <option value="1">1.0× (Normal)</option>
+                                <option value="0.9" selected>0.9× (Sosegado)</option>
+                                <option value="0.75">0.75× (Lento)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Silabación</strong></td>
+                        <td>Separador de sílabas por color o guion</td>
+                        <td><span class="badge-profile">Dislexia</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-syllables" onchange="toggleSyllables(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-start" style="background: #8E24AA; border-color: #4A148C; font-size: 1.2rem; padding: 10px 35px;" onclick="closeDuaModal()">GUARDAR Y APLICAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración DUA global
+        let duaConfig = {
+            lowStimulus: false,
+            fontLexend: false,
+            sepiaMode: false,
+            audioRate: 0.9,
+            syllables: false
+        };
+
+        // 10 Preguntas de Comprensión para la Unidad 9 basadas estrictamente en las actividades del PDF
+        const questions = [
+            {
+                text: "1. ¿Cómo se llaman los mellizos de la señora Gaskitt?",
+                options: [
+                    { text: "Gloria y Gus.", correct: true },
+                    { text: "Horacio y Carlos.", correct: false },
+                    { text: "Alba y Mario.", correct: false }
+                ],
+                clue: "Revisa el inicio del texto cuando la madre despierta a sus dos hijos."
+            },
+            {
+                text: "2. ¿Cómo se llama el gato de la familia?",
+                options: [
+                    { text: "Gus.", correct: false },
+                    { text: "Horacio.", correct: true },
+                    { text: "Ratoncito.", correct: false }
+                ],
+                clue: "Es el gato al que la señora Gaskitt le llena el plato por la mañana."
+            },
+            {
+                text: "3. ¿A qué se dedican los padres de la familia?",
+                options: [
+                    { text: "La madre es veterinaria y el padre es profesor.", correct: false },
+                    { text: "La madre es taxista y el padre, cartero.", correct: true },
+                    { text: "La madre es cocinera y el padre es bombero.", correct: false }
+                ],
+                clue: "Recuerda que ella conduce un taxi y él fue quien trajo la correspondencia."
+            },
+            {
+                text: "4. ¿De dónde enviaba la abuela Gaskitt la postal?",
+                options: [
+                    { text: "Desde España.", correct: false },
+                    { text: "Desde Italia.", correct: true },
+                    { text: "Desde Francia.", correct: false }
+                ],
+                clue: "Fíjate en el país donde la abuela estaba pasando sus vacaciones."
+            },
+            {
+                text: "5. ¿Para quién era la cita que venía en otra de las cartas?",
+                options: [
+                    { text: "Para el veterinario de Horacio.", correct: true },
+                    { text: "Para el médico de los mellizos.", correct: false },
+                    { text: "Para la revisión del taxi.", correct: false }
+                ],
+                clue: "Se refiere a una consulta médica para la mascota de la casa."
+            },
+            {
+                text: "6. ¿Cuál fue el eslogan ganador escrito por la señora Gaskitt?",
+                options: [
+                    { text: "¡Ratoncitos Crujientes para los diferentes!", correct: false },
+                    { text: "¡Ratoncitos Crujientes para los valientes!", correct: true },
+                    { text: "¡Ratoncitos Crujientes para los pacientes!", correct: false }
+                ],
+                clue: "Busca la frase que rima con la palabra 'valientes'."
+            },
+            {
+                text: "7. ¿Qué significa la palabra 'eslogan'?",
+                options: [
+                    { text: "Frase corta con la que se anuncia un producto.", correct: true },
+                    { text: "Cantidad de comida para animales.", correct: false },
+                    { text: "El sonido que hacen los gatos al dormir.", correct: false }
+                ],
+                clue: "Consulta la sección de vocabulario sobre los anuncios publicitarios."
+            },
+            {
+                text: "8. ¿Cuánto tiempo le duraría el premio a Horacio si se lo comieran 12 gatos?",
+                options: [
+                    { text: "Un año.", correct: false },
+                    { text: "Medio año.", correct: false },
+                    { text: "Un mes.", correct: true }
+                ],
+                clue: "Revisa las cuentas que hacen los gatos al final del cuento."
+            },
+            {
+                text: "9. ¿Cuántos gatos harían falta para comerse todo el premio en tan solo UN DÍA?",
+                options: [
+                    { text: "365 gatos.", correct: true },
+                    { text: "100 gatos.", correct: false },
+                    { text: "12 gatos.", correct: false }
+                ],
+                clue: "Coincide con la cantidad de días que tiene un año completo."
+            },
+            {
+                text: "10. ¿Qué significa la palabra 'ronronear'?",
+                options: [
+                    { text: "Resoplar con mucha fuerza y rabia.", correct: false },
+                    { text: "Hacer los gatos un ruido parecido a un ronquido cuando están a gusto.", correct: true },
+                    { text: "Maullar pidiendo salir a la calle.", correct: false }
+                ],
+                clue: "Mira la definición del cuadro de vocabulario sobre el sonido placentero de los gatos."
+            }
+        ];
+
+        // Gramática para "Día de suerte" (Extraída de la Unidad 9)
+        const grammarData = {
+            verbs: ["levantó", "bajó", "llenó", "estaba", "puso", "despertó", "preparó", "mandó", "leyó", "bebió", "llamó", "abrió", "dio", "pasa", "era", "ponerse", "decidió", "leer", "exclamó", "debe", "ser", "detuvo", "traía", "hice", "contestar", "escribir", "explicó", "dijo", "paraba", "ronronear", "pensó", "extendió", "miraban", "creo", "va", "durar", "comen", "soltó", "somos", "añadió", "hacemos", "reunimos"],
+            nouns: ["mañana", "mes", "mayo", "señora", "gaskitt", "escaleras", "plato", "horacio", "ratoncitos", "amigo", "visita", "ración", "mellizos", "gloria", "gus", "desayuno", "colegio", "periódico", "taza", "té", "cartero", "puerta", "beso", "señor", "volante", "taxi", "mujer", "cartas", "postal", "abuela", "vacaciones", "italia", "cita", "veterinario", "carta", "día", "suerte", "furgoneta", "casa", "premio", "cajas", "pregunta", "eslogan", "anuncio", "repartidor", "cocina", "gato", "noticia", "calle", "ventana", "comida", "año", "mes", "gatos", "exterior", "fiesta"],
+            adjectives: ["crujientes", "entusiasmada", "pronto", "impresionado", "valientes"],
+            articles: ["el", "la", "los", "las", "un", "una", "unos", "unas", "del"],
+            possessives: ["su", "sus", "mi"],
+            adverbs: ["también", "luego", "cuando", "aún", "más", "tarde", "sólo", "único", "hoy", "no", "rápidamente"],
+            prepositions: ["de", "con", "a", "al", "en", "para", "por", "desde", "hasta", "sin", "tras"]
+        };
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswering = false;
+
+        // FUNCIONES MODAL DUA
+        function openDuaModal() {
+            document.getElementById('dua-modal').style.display = 'flex';
+        }
+
+        function closeDuaModal() {
+            document.getElementById('dua-modal').style.display = 'none';
+        }
+
+        function toggleLowStimulus(active) {
+            duaConfig.lowStimulus = active;
+            document.body.classList.toggle('low-stimulus', active);
+        }
+
+        function toggleLexendFont(active) {
+            duaConfig.fontLexend = active;
+            document.body.classList.toggle('font-lexend', active);
+        }
+
+        function toggleSepiaMode(active) {
+            duaConfig.sepiaMode = active;
+            document.body.classList.toggle('mode-sepia', active);
+        }
+
+        function changeAudioRate(val) {
+            duaConfig.audioRate = parseFloat(val);
+        }
+
+        function toggleSyllables(active) {
+            duaConfig.syllables = active;
+            const targets = document.querySelectorAll('.syllable-target');
+            targets.forEach(el => {
+                if (active) {
+                    if (el.innerText.includes("ración")) el.innerText = "ra-ción";
+                    if (el.innerText.includes("eslogan")) el.innerText = "es-lo-gan";
+                    if (el.innerText.includes("ronronear")) el.innerText = "ron-ro-ne-ar";
+                } else {
+                    if (el.innerText.includes("ra-ción")) el.innerText = "ración";
+                    if (el.innerText.includes("es-lo-gan")) el.innerText = "eslogan";
+                    if (el.innerText.includes("ron-ro-ne-ar")) el.innerText = "ronronear";
+                }
+            });
+        }
+
+        // CONTROL DE JUEGO Y NAVEGACIÓN
+        function prepareReading() {
+            const container = document.getElementById('reading-text-container');
+            const paragraphs = container.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                if (!p.querySelector('em') && !p.classList.contains('vocab-box')) {
+                    const words = p.innerText.split(' ');
+                    p.innerHTML = words.map(w => `<span>${w}</span>`).join(' ');
+                }
+            });
+        }
+
+        function startGame() {
+            window.speechSynthesis.cancel();
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function showReadingOnly() {
+            window.speechSynthesis.cancel();
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('reading-screen').style.display = 'block';
+            prepareReading();
+        }
+
+        function goHome() {
+            window.speechSynthesis.cancel();
+            location.reload();
+        }
+
+        function startQuestions() {
+            window.speechSynthesis.cancel();
+            document.getElementById('reading-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswering = true;
+            const q = questions[currentQuestionIndex];
+            document.getElementById('q-counter').innerText = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('progress').style.width = `${((currentQuestionIndex) / questions.length) * 100}%`;
+            document.getElementById('question-text').innerText = q.text;
+            document.getElementById('feedback-msg').innerText = "";
+            document.getElementById('next-btn').style.display = 'none';
+
+            const clueBox = document.getElementById('clue-box');
+            clueBox.innerText = "";
+            clueBox.style.display = 'none';
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            q.options.forEach((opt) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkChoice(btn, opt.correct);
+                container.appendChild(btn);
+            });
+        }
+
+        function showAndSpeakClue() {
+            const q = questions[currentQuestionIndex];
+            if (!q.clue) return;
+
+            const clueBox = document.getElementById('clue-box');
+            clueBox.innerText = "💡 PISTA: " + q.clue;
+            clueBox.style.display = 'block';
+
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance("Pista: " + q.clue);
+            utterance.lang = 'es-ES';
+            utterance.rate = duaConfig.audioRate;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function checkChoice(btnElement, isCorrect) {
+            if (!isAnswering) return;
+            isAnswering = false;
+            window.speechSynthesis.cancel();
+            const allBtns = document.querySelectorAll('.option-btn');
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+                playFeedback(true, "¡Excelente!");
+                score++;
+            } else {
+                btnElement.classList.add('wrong');
+                playFeedback(false, "Sigue intentándolo.");
+                questions[currentQuestionIndex].options.forEach((opt, i) => {
+                    if (opt.correct) allBtns[i].classList.add('correct');
+                });
+            }
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function playFeedback(isSuccess, text) {
+            const msg = document.getElementById('feedback-msg');
+            msg.innerText = text + (isSuccess ? " 🌟" : "");
+            msg.style.color = isSuccess ? "var(--green-ok)" : "var(--red-bad)";
+
+            if (!duaConfig.lowStimulus) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'es-ES';
+                u.rate = duaConfig.audioRate;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            if (!duaConfig.lowStimulus) {
+                startConfetti();
+            }
+        }
+
+        function readFullText() {
+            window.speechSynthesis.cancel();
+            const spans = document.querySelectorAll('#reading-text-container span');
+            const fullText = document.getElementById('reading-text-container').innerText;
+            const utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'es-ES';
+            utterance.rate = duaConfig.audioRate;
+            
+            let wordIdx = 0;
+            utterance.onboundary = (e) => {
+                if (e.name === 'word') {
+                    spans.forEach(s => s.classList.remove('reading-audio-highlight'));
+                    if (spans[wordIdx]) spans[wordIdx].classList.add('reading-audio-highlight');
+                    wordIdx++;
+                }
+            };
+            utterance.onend = () => spans.forEach(s => s.classList.remove('reading-audio-highlight'));
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function togglePauseReading() {
+            if (window.speechSynthesis.speaking) {
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    document.getElementById('pause-reading-btn').innerText = '⏸️';
+                } else {
+                    window.speechSynthesis.pause();
+                    document.getElementById('pause-reading-btn').innerText = '▶️';
+                }
+            }
+        }
+
+        function speakCurrentQuestion() {
+            window.speechSynthesis.cancel();
+            const q = questions[currentQuestionIndex];
+            let text = q.text + ". ";
+            q.options.forEach(o => text += o.text + ". ");
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'es-ES';
+            u.rate = duaConfig.audioRate;
+            window.speechSynthesis.speak(u);
+        }
+
+        function toggleGrammar(category) {
+            const spans = document.querySelectorAll('#reading-text-container span');
+            const className = getHighlightClass(category);
+            const words = grammarData[category];
+
+            spans.forEach(span => {
+                const cleanWord = span.innerText.toLowerCase().replace(/[.,:;¡!–-]/g, "");
+                if (words.includes(cleanWord)) {
+                    span.classList.toggle(className);
+                }
+            });
+        }
+
+        function getHighlightClass(cat) {
+            switch(cat) {
+                case 'verbs': return 'highlight-yellow';
+                case 'nouns': return 'highlight-red';
+                case 'adjectives': return 'highlight-blue-light';
+                case 'articles': return 'highlight-green-light';
+                case 'possessives': return 'highlight-gray';
+                case 'adverbs': return 'highlight-adverb-red';
+                case 'prepositions': return 'highlight-blue-strong';
+                default: return '';
+            }
+        }
+
+        function clearAllHighlights() {
+            const spans = document.querySelectorAll('#reading-text-container span');
+            const classes = ['highlight-yellow', 'highlight-red', 'highlight-blue-light', 'highlight-green-light', 'highlight-gray', 'highlight-adverb-red', 'highlight-blue-strong'];
+            spans.forEach(span => span.classList.remove(...classes));
+        }
+
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 900; canvas.height = 600;
+            const particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * 900, y: Math.random() * 600,
+                    size: Math.random() * 6 + 4, color: '#0288D1',
+                    sy: Math.random() * 3 + 2
+                });
+            }
+            function draw() {
+                ctx.clearRect(0,0,900,600);
+                particles.forEach(p => {
+                    p.y += p.sy; if (p.y > 600) p.y = -10;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>

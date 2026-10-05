@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LENGUA CASTELLANA Y LITERATURA - COMPRENSIÓN ORAL</title>
+    <!-- Fuentes redondas para estilo infantil -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Quicksand:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --morado-marco: #D936F8;
+            --morado-pildora: #B966F7;
+            --morado-boton: #9B30EE;
+            --morado-hover: #8013D6;
+            --sombra-boton: rgba(155, 48, 238, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Fredoka', 'Quicksand', sans-serif;
+            background-color: #EAE6DF;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Contenedor Principal con Marco Violeta/Púrpura */
+        .contenedor-principal {
+            background-color: #FFFFFF;
+            border: 14px solid var(--morado-marco);
+            border-radius: 35px;
+            width: 100%;
+            max-width: 950px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Título Principal con Letras Multicolor */
+        .titulo-principal {
+            font-size: 3.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            line-height: 1.15;
+        }
+
+        .letra-naranja { color: #FF5A36; }
+        .letra-verde { color: #00C853; }
+        .letra-azul { color: #00B0FF; }
+        .letra-morada { color: #9C27B0; }
+        .letra-roja { color: #FF2A4B; }
+        .letra-amarilla { color: #FFB300; }
+        .letra-rosa { color: #FF4081; }
+
+        /* Subtítulo Comprensión Oral */
+        .subtitulo {
+            color: #0088CC;
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-transform: uppercase;
+        }
+
+        .emoji-cohete {
+            font-size: 1.8rem;
+        }
+
+        /* Píldora Morada de Curso */
+        .pildora-curso {
+            background-color: var(--morado-pildora);
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 8px 28px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        /* 3 Iconos Cuadrados Decorativos (Estrella, Llave, Libro) */
+        .contenedor-iconos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .caja-icono {
+            width: 85px;
+            height: 85px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+        }
+
+        .caja-icono:hover {
+            transform: translateY(-4px);
+        }
+
+        .caja-amarilla { background-color: #FFF2B2; }
+        .caja-rosa { background-color: #FFE3E8; }
+        .caja-azul { background-color: #E1F3FF; }
+
+        .icono-svg-cabecera {
+            width: 44px;
+            height: 44px;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Botón Púrpura LECTURAS */
+        .boton-desplegable {
+            background-color: var(--morado-boton);
+            color: #FFFFFF;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 16px 45px;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px var(--sombra-boton);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 35px;
+        }
+
+        .boton-desplegable:hover {
+            background-color: var(--morado-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(128, 19, 214, 0.4);
+        }
+
+        .flecha-icono {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .boton-desplegable.activo .flecha-icono {
+            transform: rotate(180deg);
+        }
+
+        /* Rejilla de 3x3 Fichas */
+        .grid-aplicaciones {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tarjeta de Ficha */
+        .tarjeta-app {
+            background: linear-gradient(145deg, #FFFFFF, #F8F4FC);
+            border: 3px solid #E1D2F0;
+            border-radius: 22px;
+            padding: 22px 15px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 200px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+        }
+
+        .tarjeta-app:hover {
+            transform: translateY(-8px) scale(1.03);
+            border-color: var(--morado-pildora);
+            background: #FFFFFF;
+            box-shadow: 0 12px 25px rgba(185, 102, 247, 0.25);
+        }
+
+        .numero-app {
+            background-color: var(--morado-pildora);
+            color: #FFFFFF;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 14px;
+        }
+
+        /* Iconos 3D Animados Grandes */
+        .icono-3d-ficha {
+            font-size: 3.5rem;
+            margin: 8px 0;
+            line-height: 1;
+            filter: drop-shadow(3px 5px 6px rgba(0, 0, 0, 0.22));
+            transition: transform 0.4s ease;
+            animation: flotar 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes flotar {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-6px) rotate(4deg); }
+        }
+
+        .tarjeta-app:hover .icono-3d-ficha {
+            transform: scale(1.22) rotate(6deg);
+            animation-play-state: paused;
+        }
+
+        .titulo-app {
+            color: #2C3E50;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 5px 0 10px 0;
+            line-height: 1.3;
+        }
+
+        .tag-abrir {
+            font-size: 0.85rem;
+            color: var(--morado-boton);
+            font-weight: 700;
+            background: #F3E5F9;
+            padding: 6px 14px;
+            border-radius: 12px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .tarjeta-app:hover .tag-abrir {
+            background: var(--morado-boton);
+            color: #FFFFFF;
+        }
+
+        /* Créditos Pie de Página */
+        .creditos {
+            border-top: 2px dashed #E2E8F0;
+            padding-top: 20px;
+            color: #64748B;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .creditos strong {
+            color: #334155;
+        }
+
+        @media (max-width: 800px) {
+            .grid-aplicaciones {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .grid-aplicaciones {
+                grid-template-columns: 1fr;
+            }
+            .titulo-principal { font-size: 2.1rem; }
+            .subtitulo { font-size: 1.3rem; }
+            .contenedor-principal { border-width: 8px; padding: 25px 15px; }
+            .boton-desplegable { font-size: 1.1rem; padding: 14px 25px; }
+            .icono-3d-ficha { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+
+        <!-- Encabezado con Letras Multicolor -->
+        <h1 class="titulo-principal">
+            <span class="letra-roja">L</span><span class="letra-naranja">E</span><span class="letra-amarilla">N</span><span class="letra-verde">G</span><span class="letra-azul">U</span><span class="letra-morada">A</span> 
+            <span class="letra-rosa">C</span><span class="letra-roja">A</span><span class="letra-naranja">S</span><span class="letra-amarilla">T</span><span class="letra-verde">E</span><span class="letra-azul">L</span><span class="letra-morada">L</span><span class="letra-rosa">A</span><span class="letra-roja">N</span><span class="letra-naranja">A</span> 
+            <span class="letra-amarilla">Y</span><br>
+            <span class="letra-roja">L</span><span class="letra-naranja">I</span><span class="letra-amarilla">T</span><span class="letra-verde">E</span><span class="letra-azul">R</span><span class="letra-morada">A</span><span class="letra-rosa">T</span><span class="letra-roja">U</span><span class="letra-naranja">R</span><span class="letra-amarilla">A</span>
+        </h1>
+
+        <!-- Subtítulo Comprensión Oral -->
+        <div class="subtitulo">
+            <span class="emoji-cohete">🚀</span>
+            COMPRENSIÓN ORAL
+            <span class="emoji-cohete">🚀</span>
+        </div>
+
+        <!-- Píldora de Curso Morada -->
+        <div class="pildora-curso">2º Educación Primaria</div>
+
+        <!-- 3 Iconos Cuadrados Decorativos (Estrella, Llave, Libro) -->
+        <div class="contenedor-iconos">
+            <div class="caja-icono caja-amarilla">
+                <svg class="icono-svg-cabecera" style="stroke: #D97706;" viewBox="0 0 24 24">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </div>
+            <div class="caja-icono caja-rosa">
+                <svg class="icono-svg-cabecera" style="stroke: #E11D48;" viewBox="0 0 24 24">
+                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                </svg>
+            </div>
+            <div class="caja-icono caja-azul">
+                <svg class="icono-svg-cabecera" style="stroke: #0284C7;" viewBox="0 0 24 24">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Botón Morado LECTURAS -->
+        <button class="boton-desplegable" id="btnDesplegar" onclick="toggleMenu()">
+            LECTURAS
+            <span class="flecha-icono">╲</span>
+        </button>
+
+        <!-- Rejilla en Cuadrícula 3x3 (UNIDAD 1 a UNIDAD 9) -->
+        <div class="grid-aplicaciones" id="menuApps">
+
+            <!-- UNIDAD 1 -->
+            <a href="1_Una verde sonrisa.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 1</span>
+                <div class="icono-3d-ficha">🌱</div>
+                <div class="titulo-app">Una verde sonrisa</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 2 -->
+            <a href="2_Los cinco héroes.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 2</span>
+                <div class="icono-3d-ficha">🦸‍♂️</div>
+                <div class="titulo-app">Los cinco héroes</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 3 -->
+            <a href="3_Seré pintor.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 3</span>
+                <div class="icono-3d-ficha">🎨</div>
+                <div class="titulo-app">Seré pintor</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 4 -->
+            <a href="4_El dragón Nian.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 4</span>
+                <div class="icono-3d-ficha">🐉</div>
+                <div class="titulo-app">El dragón Nian</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 5 -->
+            <a href="5_El coyote y el lagarto.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 5</span>
+                <div class="icono-3d-ficha">🐺</div>
+                <div class="titulo-app">El coyote y el lagarto</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 6 -->
+            <a href="6_Una fiesta genial.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 6</span>
+                <div class="icono-3d-ficha">🎉</div>
+                <div class="titulo-app">Una fiesta genial</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 7 -->
+            <a href="7_Un encuentro inesperado.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 7</span>
+                <div class="icono-3d-ficha">🔍</div>
+                <div class="titulo-app">Un encuentro inesperado</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 8 -->
+            <a href="8_Los ratones.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 8</span>
+                <div class="icono-3d-ficha">🐭</div>
+                <div class="titulo-app">Los ratones</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+            <!-- UNIDAD 9 -->
+            <a href="9_Día de suerte.html" class="tarjeta-app" target="_blank">
+                <span class="numero-app">UNIDAD 9</span>
+                <div class="icono-3d-ficha">🍀</div>
+                <div class="titulo-app">Día de suerte</div>
+                <span class="tag-abrir">Abrir lectura ➔</span>
+            </a>
+
+        </div>
+
+        <!-- Créditos del pie de página -->
+        <div class="creditos">
+            Material didáctico y aplicación desarrollada por <strong>Carlos Garrido</strong>
+        </div>
+
+    </div>
+
+    <!-- JavaScript para desplegar el menú -->
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menuApps");
+            var btn = document.getElementById("btnDesplegar");
+            
+            if (menu.style.display === "grid") {
+                menu.style.display = "none";
+                btn.classList.remove("activo");
+            } else {
+                menu.style.display = "grid";
+                btn.classList.add("activo");
+            }
+        }
+    </script>
+
+</body>
+</html>

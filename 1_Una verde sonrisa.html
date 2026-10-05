@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una verde sonrisa - Juego de Lectura 2º Primaria</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&family=Lexend:wght@400;700&display=swap');
+
+        :root {
+            --primary: #2E7D32;      /* Verde ogro principal */
+            --secondary: #558B2F;    /* Verde hoja secundario */
+            --accent: #FBC02D;       /* Amarillo alegría */
+            --bg: #E8F5E9;
+            --text: #1B5E20;
+            --border: #2E7D32;
+            --green-ok: #388E3C;
+            --red-bad: #C62828;
+            --card-bg: #FFFFFF;
+            --font-family: 'Nunito', sans-serif;
+            --font-scale: 1;
+            --line-height: 1.6;
+            --bg-reading: #FFFFFF;
+        }
+
+        /* MODO SEPIA DUA */
+        body.mode-sepia {
+            --bg: #F5EBE0;
+            --card-bg: #FFFDF0;
+            --text: #3E2723;
+            --border: #5D4037;
+            --bg-reading: #FAF3E0;
+        }
+
+        /* FUENTE ACCESIBLE DUA */
+        body.font-lexend {
+            font-family: 'Lexend', sans-serif !important;
+        }
+
+        /* BAJO ESTÍMULO DUA */
+        body.low-stimulus * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg);
+            background-image: radial-gradient(#C8E6C9 20%, transparent 20%),
+                              radial-gradient(#C8E6C9 20%, transparent 20%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            user-select: none;
+            font-size: calc(1rem * var(--font-scale));
+        }
+
+        #game-container {
+            width: 95%;
+            max-width: 920px;
+            background: var(--card-bg);
+            border-radius: 25px;
+            box-shadow: 0 10px 0 #1B5E20, 0 20px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+            border: 6px solid var(--border);
+            z-index: 10;
+            margin: 20px 0;
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* CABECERA PERMANENTE CON BOTÓN DUA */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: #C8E6C9;
+            border-bottom: 4px solid var(--border);
+        }
+
+        .dua-btn-trigger {
+            background: #8E24AA;
+            color: white;
+            border: 3px solid #4A148C;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #4A148C;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dua-btn-trigger:hover {
+            transform: scale(1.05);
+            background: #AB47BC;
+        }
+
+        /* PANTALLA DE INICIO */
+        #start-screen {
+            padding: 30px 40px 40px 40px;
+            text-align: center;
+            background: linear-gradient(180deg, #FFFFFF 0%, #E8F5E9 100%);
+        }
+
+        .header-tags {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .tag {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+            font-size: 1.1rem;
+            transform: rotate(-4deg);
+            border: 2px solid white;
+        }
+
+        .tag-version {
+            background: #2E7D32;
+            color: white;
+            transform: rotate(4deg);
+            border: 2px solid var(--accent);
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.2rem;
+            color: var(--primary);
+            text-shadow: 3px 3px 0 #A5D6A7;
+            margin: 10px 0;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1B5E20;
+            background: var(--accent);
+            display: inline-block;
+            padding: 8px 22px;
+            border-radius: 20px;
+            margin-top: 5px;
+            border: 2px dashed var(--primary);
+            text-transform: uppercase;
+        }
+
+        .hero-image {
+            font-size: 5.5rem;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.2));
+        }
+
+        .credits-top {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            font-weight: 800;
+            margin-bottom: 15px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .credits-bottom {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            font-weight: 800;
+            margin-top: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .credits-author {
+            font-size: 0.95rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-top: 6px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .btn-start {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 50px;
+            font-size: 1.8rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #1B5E20;
+            transition: transform 0.1s;
+            border: 4px solid var(--secondary);
+            text-transform: uppercase;
+            display: inline-block;
+            margin: 8px;
+        }
+
+        .btn-start:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #1B5E20;
+        }
+
+        /* MODAL DE MEDIDAS DUA */
+        #dua-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dua-modal-card {
+            background: #FFFDF0;
+            width: 90%;
+            max-width: 820px;
+            max-height: 90vh;
+            border-radius: 25px;
+            border: 6px solid #8E24AA;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+            animation: modalPop 0.3s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .dua-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px dashed #8E24AA;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dua-modal-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: #4A148C;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .dua-close-btn {
+            background: #E53935;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #B71C1C;
+        }
+
+        .dua-info-banner {
+            background: #F3E5F5;
+            border-left: 6px solid #8E24AA;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #4A148C;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .dua-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .dua-table th {
+            background: #8E24AA;
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .dua-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #E0E0E0;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .dua-table tr:hover {
+            background: #F8F0FC;
+        }
+
+        .badge-profile {
+            background: #E1BEE7;
+            color: #4A148C;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        /* TOGGLE SWITCHES */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #CCC; transition: .3s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #8E24AA; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* LECTURA Y PANTALLA JUEGO */
+        #reading-screen, #game-screen, #end-screen {
+            display: none;
+            padding: 30px;
+        }
+
+        #reading-screen {
+            background: var(--bg-reading);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .reading-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .reading-content {
+            font-size: calc(1.15rem * var(--font-scale));
+            line-height: var(--line-height);
+            color: var(--text);
+            flex-grow: 1;
+        }
+
+        .vocab-box {
+            background-color: #FFFDE7;
+            border: 2px dashed #FBC02D;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin: 20px 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .grammar-legend {
+            width: 210px;
+            background: #F1F8E9;
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            flex-shrink: 0;
+        }
+
+        .legend-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .legend-item:hover { background: #DCEDC8; }
+
+        .circle {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
+        .legend-text {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .highlight-yellow { background-color: #FFF59D; border-radius: 3px; }
+        .highlight-red { background-color: #FFCDD2; border-radius: 3px; }
+        .highlight-blue-light { background-color: #B3E5FC; border-radius: 3px; }
+        .highlight-green-light { background-color: #C8E6C9; border-radius: 3px; }
+        .highlight-gray { background-color: #E0E0E0; border-radius: 3px; }
+        .highlight-adverb-red { background-color: #E53935; color: white; border-radius: 3px; }
+        .highlight-blue-strong { background-color: #1E88E5; color: white; border-radius: 3px; }
+
+        .reading-audio-highlight { background-color: #FFF59D; border-radius: 4px; border-bottom: 2px solid #FBC02D; }
+
+        /* PREGUNTAS */
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 2px solid #90A4AE;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease-out;
+        }
+
+        .question-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: #F1F8E9;
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .question-title {
+            font-size: calc(1.3rem * var(--font-scale));
+            color: var(--text);
+            font-weight: 800;
+            text-align: left;
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+
+        .audio-btn {
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 0 #F57F17;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+        }
+        .audio-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #F57F17;
+        }
+
+        .btn-clue {
+            background: #FBC02D;
+            color: #3E2723;
+            border: none;
+            padding: 0 16px;
+            height: 48px;
+            border-radius: 24px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #F57F17;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-clue:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #F57F17;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        @media (min-width: 600px) {
+             .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #A5D6A7;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: calc(1.1rem * var(--font-scale));
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background: #C8E6C9;
+            border-color: var(--primary);
+        }
+
+        .option-btn.correct {
+            background: var(--green-ok) !important;
+            border-color: #1B5E20 !important;
+            color: white;
+        }
+
+        .option-btn.wrong {
+            background: var(--red-bad) !important;
+            border-color: #B71C1C !important;
+            color: white;
+        }
+
+        #clue-box {
+            display: none;
+            background: #FFF9C4;
+            border: 2px dashed #FBC02D;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #5D4037;
+            text-align: left;
+        }
+
+        #next-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #1B5E20;
+            margin: 20px auto 0 auto;
+            display: none;
+        }
+
+        #feedback-msg {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            min-height: 30px;
+            text-align: center;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* RESULTADOS */
+        .score-display {
+            font-size: 4rem;
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary);
+            margin: 10px 0;
+            text-shadow: 2px 2px 0 var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- BARRA SUPERIOR DE ACCESIBILIDAD PERMANENTE -->
+        <div class="top-navbar">
+            <span style="font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 1.1rem;">
+                🐸 UNA VERDE SONRISA
+            </span>
+            <button class="dua-btn-trigger" onclick="openDuaModal()">
+                ⚙️ Medidas DUA
+            </button>
+        </div>
+
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- PANTALLA DE INICIO -->
+        <div id="start-screen">
+            <div class="header-tags">
+                <div class="tag">2º PRIMARIA</div>
+                <div class="tag tag-version">UNIDAD 1</div>
+            </div>
+            
+            <h1>Una verde sonrisa</h1>
+            
+            <div class="subtitle">LENGUA CASTELLANA Y LITERATURA • LECTURA</div>
+            
+            <div class="hero-image">🏫 🎒 👹</div>
+            
+            <div class="credits-top">2º Educación Primaria</div>
+            
+            <button class="btn-start" onclick="startGame()">¡JUGAR!</button>
+            <br>
+            <button class="btn-start" style="background: var(--accent); border-color: var(--primary); color: #333;" onclick="showReadingOnly()">LECTURA</button>
+            
+            <div class="credits-bottom">Un cuento de Mario Méndez</div>
+            <div class="credits-author">Aplicación didáctica desarrollada por Carlos Garrido</div>
+        </div>
+
+        <!-- PANTALLA DE LECTURA -->
+        <div id="reading-screen">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <h2 style="font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--primary); margin: 0;">Una verde sonrisa</h2>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="audio-btn" style="background: #90A4AE; box-shadow: 0 4px 0 #455A64;" onclick="goHome()" title="Ir al inicio">🏠</button>
+                    <button class="audio-btn" onclick="readFullText()" title="Escuchar lectura completa">🔊</button>
+                    <button class="audio-btn" id="pause-reading-btn" style="background: #FF9800; box-shadow: 0 4px 0 #E65100;" onclick="togglePauseReading()" title="Pausar / Reanudar lectura">⏸️</button>
+                </div>
+            </div>
+
+            <div class="reading-layout">
+                <div id="reading-text-container" class="reading-content">
+                    <p>Cuando mi mamá me dijo que tenía que ir a la escuela, armé un escándalo inolvidable. ¿Por qué tenía que ser yo el primero de la familia en recibir educación? Rompí cosas, grité como un loco. A ella no le importó lo más mínimo. Pero no era justo. Papá no ha aprendido a escribir jamás. Mamá solo lee algunas recetas de un viejo libro de cocina. Y mis hermanos y primos, para qué hablar... ¡Ni siquiera saben lo que es una escuela!</p>
+                    <p>Yo no quería ir, me negaba, pataleaba y <span class="syllable-target">bufaba</span>. Pero mamá se salió con la suya, como siempre.</p>
+                    <p>El primer día, todos los chicos y chicas nos amontonamos en la puerta del colegio. Se notaba quiénes éramos los nuevos: los únicos que teníamos a toda la familia detrás con los teléfonos preparados. De inmediato me di cuenta de que yo era el más alto. Sentía que todo el mundo me miraba. Pero mi mamá sonreía como si nada. Estaba orgullosa de mi <span class="syllable-target">inmaculado</span> babi de rayas azules y blancas y de los gigantescos zapatones negros que me torturaban los pies. Hasta de la inmensa mochila parecía sentirse orgullosa.</p>
+                    <p>Mamá me miraba, amorosa. Me tenía bien apretada la mano, como si supiera que, en cuanto la aflojara, yo aprovecharía para salir corriendo.</p>
+                    <p>Al fin sonó el timbre de entrada. Mamá me estampó un sonoro beso y me soltó. Desde su enorme altura saludó a mi papá, que estaba en la esquina y que también sobresalía más de un metro por encima de la multitud, como ella. Yo espié buscando una vía de fuga. No la había. Avancé hasta el centro del patio <span class="syllable-target">resignado</span>. Ya llegaría mi oportunidad en cuanto entráramos en el aula: tenía que haber alguna ventana, estaba seguro. Formamos filas y escuchamos la bienvenida de la directora.</p>
+                    <p>Entonces oí una voz. Una como nunca antes había oído. Era la voz de la señorita Alba, que nos invitaba a seguirla.</p>
+                    <p>—Tú eres Ogrez, ¿no? Carlitos Ogrez —me dijo mientras miraba su lista—. ¡Qué lindo, con esa carita verde! ¡Verás cuánto vamos a aprender!</p>
+                    <p>Yo supe de pronto que no me escaparía. Supe que sería el primer ogro de la historia en ir a la escuela a aprender. Ya no habría huida, no podía haberla. Era irremediable: me había enamorado de la señorita.</p>
+                    
+                    <p style="font-size: 0.95rem; font-weight: bold; text-align: right; color: #558B2F; margin-top: 15px;">
+                        MARIO MÉNDEZ<br>
+                        <em>Ruidos monstruosos, Loqueleo Argentina (adaptación)</em>
+                    </p>
+
+                    <div class="vocab-box">
+                        <strong>Vocabulario de la lectura:</strong><br>
+                        • <strong><span class="syllable-target">bufaba</span>:</strong> resoplaba con fuerza y rabia.<br>
+                        • <strong><span class="syllable-target">inmaculado</span>:</strong> muy limpio, sin manchas.<br>
+                        • <strong><span class="syllable-target">resignado</span>:</strong> conformándose con algo que no le gusta.
+                    </div>
+                </div>
+
+                <div class="grammar-legend">
+                    <div class="legend-title">ANÁLISIS DE PALABRAS</div>
+                    <div class="legend-item" onclick="toggleGrammar('verbs')">
+                        <div class="circle" style="background: #FFF59D;"></div>
+                        <span class="legend-text">Verbos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('nouns')">
+                        <div class="circle" style="background: #FFCDD2;"></div>
+                        <span class="legend-text">Sustantivos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('adjectives')">
+                        <div class="circle" style="background: #B3E5FC;"></div>
+                        <span class="legend-text">Adjetivos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('articles')">
+                        <div class="circle" style="background: #C8E6C9;"></div>
+                        <span class="legend-text">Artículos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('possessives')">
+                        <div class="circle" style="background: #E0E0E0;"></div>
+                        <span class="legend-text">Posesivos</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('adverbs')">
+                        <div class="circle" style="background: #E53935;"></div>
+                        <span class="legend-text">Adverbios</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleGrammar('prepositions')">
+                        <div class="circle" style="background: #1E88E5;"></div>
+                        <span class="legend-text">Preposiciones</span>
+                    </div>
+                    <div style="margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center;">
+                        <button onclick="clearAllHighlights()" style="cursor:pointer; font-size: 0.75rem; border-radius: 5px; border: 1px solid #ccc; padding: 4px 8px;">Limpiar todo</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="btn-reading-continue" class="btn-start" style="font-size: 1.4rem; padding: 10px 40px;" onclick="startQuestions()">CONTINUAR AL JUEGO</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE JUEGO (PREGUNTAS) -->
+        <div id="game-screen">
+            <div class="header-tags" style="margin-bottom: 5px; justify-content: flex-end;">
+                <span id="q-counter" style="font-weight: bold; color: #33691E; font-size: 0.95rem; transform: none;">Pregunta 1/10</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title-container">
+                    <div id="question-text" class="question-title">Cargando...</div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="audio-btn" style="background: #90A4AE; box-shadow: 0 4px 0 #455A64;" onclick="goHome()" title="Ir al inicio">🏠</button>
+                        <button class="audio-btn" onclick="speakCurrentQuestion()" title="Escuchar pregunta">🔊</button>
+                        <button class="btn-clue" onclick="showAndSpeakClue()" title="Ver y escuchar pista">💡 Pista</button>
+                    </div>
+                </div>
+                
+                <div id="options-container" class="options-grid"></div>
+                
+                <div id="clue-box"></div>
+                <div id="feedback-msg"></div>
+                
+                <button id="next-btn" onclick="nextQuestion()">Siguiente >></button>
+            </div>
+        </div>
+
+        <!-- PANTALLA FINAL -->
+        <div id="end-screen" style="text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0;">¡UNA VERDE SONRISA!</h1>
+            <p style="font-size: 1.2rem; margin-top: 5px;">Has completado todas las preguntas sobre el cuento de Carlitos Ogrez.</p>
+            
+            <div class="hero-image" style="font-size: 5rem; margin: 10px 0;">👹</div>
+            
+            <div class="score-display" id="final-score">0/0</div>
+            
+            <div style="background: #DCEDC8; padding: 15px; border-radius: 12px; display: inline-block; border: 2px dashed #2E7D32; font-weight: bold; color: #1B5E20; margin-top: 10px;">
+                ¡Gran trabajo de comprensión lectora!<br>
+                Has demostrado ser un excelente alumno como Carlitos.
+            </div>
+            <br><br>
+            <button class="btn-start" style="font-size: 1.5rem; padding: 10px 40px;" onclick="location.reload()">Repetir</button>
+        </div>
+
+    </div>
+
+    <!-- VENTANA MODAL MEDIDAS DUA -->
+    <div id="dua-modal">
+        <div class="dua-modal-card">
+            <div class="dua-modal-header">
+                <h2 class="dua-modal-title">
+                    ⚙ Medidas DUA de Acceso
+                </h2>
+                <button class="dua-close-btn" onclick="closeDuaModal()">×</button>
+            </div>
+
+            <div class="dua-info-banner">
+                Ajusta las medidas de acceso al aprendizaje para adaptar la experiencia a las necesidades del alumnado (TEA, TEL, Dislexia, Baja Visión o Estrés Visual).
+            </div>
+
+            <table class="dua-table">
+                <thead>
+                    <tr>
+                        <th>Función DUA</th>
+                        <th>Herramienta Integrada</th>
+                        <th>Perfil Beneficiado Principal</th>
+                        <th style="text-align: center;">Activar / Configurar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bajo Estímulo</strong></td>
+                        <td>Desactiva animaciones, movimiento y sonido</td>
+                        <td><span class="badge-profile">TEA / TDAH</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-low-stimulus" onchange="toggleLowStimulus(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tamaño/Fuente</strong></td>
+                        <td>Aumenta texto / Fuente <em>Lexend</em></td>
+                        <td><span class="badge-profile">Dislexia / Baja visión</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-lexend" onchange="toggleLexendFont(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modo Sepia</strong></td>
+                        <td>Fondo crema y contraste suave</td>
+                        <td><span class="badge-profile">Dislexia / Estrés visual</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-sepia" onchange="toggleSepiaMode(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Velocidad Audio</strong></td>
+                        <td>Selector de velocidad (0.75× a 1.0×)</td>
+                        <td><span class="badge-profile">TEL / Dislexia</span></td>
+                        <td style="text-align: center;">
+                            <select id="dua-audio-rate" style="padding: 5px 10px; border-radius: 8px; border: 2px solid #8E24AA; font-weight: bold;" onchange="changeAudioRate(this.value)">
+                                <option value="1">1.0× (Normal)</option>
+                                <option value="0.9" selected>0.9× (Sosegado)</option>
+                                <option value="0.75">0.75× (Lento)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Silabación</strong></td>
+                        <td>Separador de sílabas por color o guion</td>
+                        <td><span class="badge-profile">Dislexia</span></td>
+                        <td style="text-align: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="dua-syllables" onchange="toggleSyllables(this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-start" style="background: #8E24AA; border-color: #4A148C; font-size: 1.2rem; padding: 10px 35px;" onclick="closeDuaModal()">GUARDAR Y APLICAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración DUA global
+        let duaConfig = {
+            lowStimulus: false,
+            fontLexend: false,
+            sepiaMode: false,
+            audioRate: 0.9,
+            syllables: false
+        };
+
+        // 10 Preguntas de Comprensión para 2º de Primaria
+        // Las pistas orientan al alumno sin revelar la respuesta de forma directa
+        const questions = [
+            {
+                text: "1. ¿Cómo se llama el personaje principal de la historia?",
+                options: [
+                    { text: "Carlitos Ogrez.", correct: true },
+                    { text: "Señorita Alba.", correct: false },
+                    { text: "Jacinto el gnomo.", correct: false }
+                ],
+                clue: "Busca en la lectura el nombre que pronuncia la maestra cuando revisa la lista de los nuevos alumnos."
+            },
+            {
+                text: "2. ¿Por qué armó Carlitos un escándalo al principio?",
+                options: [
+                    { text: "Porque se le perdió el babi de rayas.", correct: false },
+                    { text: "Porque su mamá le dijo que tenía que ir a la escuela.", correct: true },
+                    { text: "Porque no le gustaban los zapatones negros.", correct: false }
+                ],
+                clue: "Piensa en cuál fue la noticia que le dio su madre justo antes de empezar a romper cosas y gritar."
+            },
+            {
+                text: "3. ¿Qué hacía el papá de Carlitos sobre la lectura y la escritura?",
+                options: [
+                    { text: "Leía cuentos todas las noches.", correct: false },
+                    { text: "No ha aprendido a escribir jamás.", correct: true },
+                    { text: "Escribía libros de recetas.", correct: false }
+                ],
+                clue: "Recuerda la habilidad relacionada con las letras que el papá nunca llegó a aprender en su vida."
+            },
+            {
+                text: "4. ¿Qué suele consultar la mamá de Carlitos para leer?",
+                options: [
+                    { text: "Un periódico de noticias.", correct: false },
+                    { text: "Algunas recetas de un viejo libro de cocina.", correct: true },
+                    { text: "Un diccionario grande.", correct: false }
+                ],
+                clue: "Recuerda qué tipo de libro con instrucciones para preparar comida suele hojear mamá."
+            },
+            {
+                text: "5. ¿Qué significa la palabra 'bufaba' según el cuento?",
+                options: [
+                    { text: "Resoplaba con fuerza y rabia.", correct: true },
+                    { text: "Lloraba en voz muy baja.", correct: false },
+                    { text: "Reía de alegría.", correct: false }
+                ],
+                clue: "Revisa la zona de vocabulario: se refiere al sonido que hace una persona cuando echa aire con mucho enfado."
+            },
+            {
+                text: "6. ¿Cómo era el babi que llevaba Carlitos a la escuela?",
+                options: [
+                    { text: "Inmaculado, de rayas azules y blancas.", correct: true },
+                    { text: "Rojo con lunares negros.", correct: false },
+                    { text: "Viejo y manchado de pintura.", correct: false }
+                ],
+                clue: "Recuerda el estampado y los dos colores que tenía la prenda que llevaba puesta el primer día de colegio."
+            },
+            {
+                text: "7. ¿Qué significa la palabra 'inmaculado'?",
+                options: [
+                    { text: "Muy limpio, sin manchas.", correct: true },
+                    { text: "Muy roto y desgastado.", correct: false },
+                    { text: "Muy suave y caliente.", correct: false }
+                ],
+                clue: "Consulta el cuadro de vocabulario: explica el estado impecable en el que estaba su ropa."
+            },
+            {
+                text: "8. ¿Qué le molestaba a Carlitos en los pies el primer día?",
+                options: [
+                    { text: "Unas calcetas rojas.", correct: false },
+                    { text: "Los gigantescos zapatones negros que le torturaban.", correct: true },
+                    { text: "Las piedras del patio.", correct: false }
+                ],
+                clue: "Piensa en el calzado gigante y pesado que le hacía daño al caminar hacia el patio."
+            },
+            {
+                text: "9. ¿Por qué destacaban Carlitos y sus padres entre la multitud?",
+                options: [
+                    { text: "Porque llevaban gorros colorados.", correct: false },
+                    { text: "Porque eran muy altos y de color verde.", correct: true },
+                    { text: "Porque llegaron cantando muy fuerte.", correct: false }
+                ],
+                clue: "Recuerda la enorme estatura y el característico aspecto que distingue a la familia de ogros."
+            },
+            {
+                text: "10. ¿Por qué supo Carlitos que al final no se escaparía de la escuela?",
+                options: [
+                    { text: "Porque se había enamorado de la señorita.", correct: true },
+                    { text: "Porque la puerta estaba cerrada con llave.", correct: false },
+                    { text: "Porque su mamá lo miraba desde la ventana.", correct: false }
+                ],
+                clue: "Piensa en el sentimiento especial que sintió Carlitos al escuchar por primera vez la voz de la maestra Alba."
+            }
+        ];
+
+        // Gramática para "Una verde sonrisa"
+        const grammarData = {
+            verbs: ["dijo", "tenía", "ir", "armé", "ser", "recibir", "rompí", "grité", "importó", "era", "aprendido", "escribir", "lee", "hablar", "saben", "quería", "negaba", "pataleaba", "bufaba", "salió", "amontonamos", "notaba", "éramos", "teníamos", "cuenta", "miraba", "sonreía", "estaba", "torturaban", "parecía", "sentirse", "aflojara", "aprovecharía", "salir", "corriendo", "sonó", "estampó", "soltó", "saludó", "sobresalía", "espié", "buscando", "había", "avancé", "llegaría", "entráramos", "formamos", "escuchamos", "oí", "invitaba", "seguirla", "eres", "verás", "vamos", "aprender", "supe", "escaparía", "sería", "enamorado"],
+            nouns: ["mamá", "escuela", "escándalo", "familia", "educación", "cosas", "papá", "recetas", "libro", "cocina", "hermanos", "primos", "chicos", "chicas", "puerta", "colegio", "teléfonos", "mundo", "babi", "rayas", "zapatones", "pies", "mochila", "mano", "timbre", "entrada", "beso", "altura", "esquina", "multitud", "vía", "fuga", "centro", "patio", "oportunidad", "aula", "ventana", "filas", "bienvenida", "directora", "voz", "señorita", "alba", "lista", "carita", "ogro", "historia", "huida"],
+            adjectives: ["inolvidable", "primero", "mínimo", "justo", "viejo", "primer", "nuevos", "alto", "orgullosa", "inmaculado", "azules", "blancas", "gigantescos", "negros", "inmensa", "amorosa", "apretada", "sonoro", "enorme", "resignado", "lindo", "verde", "irremediable"],
+            articles: ["el", "la", "los", "las", "un", "una", "unos", "unas", "del"],
+            possessives: ["mi", "mis", "su", "sus"],
+            adverbs: ["no", "más", "jamás", "solo", "siempre", "nunca", "después", "pronto", "ya"],
+            prepositions: ["de", "a", "con", "en", "para", "por", "hasta", "desde", "sin"]
+        };
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswering = false;
+
+        // FUNCIONES MODAL DUA
+        function openDuaModal() {
+            document.getElementById('dua-modal').style.display = 'flex';
+        }
+
+        function closeDuaModal() {
+            document.getElementById('dua-modal').style.display = 'none';
+        }
+
+        function toggleLowStimulus(active) {
+            duaConfig.lowStimulus = active;
+            document.body.classList.toggle('low-stimulus', active);
+        }
+
+        function toggleLexendFont(active) {
+            duaConfig.fontLexend = active;
+            document.body.classList.toggle('font-lexend', active);
+        }
+
+        function toggleSepiaMode(active) {
+            duaConfig.sepiaMode = active;
+            document.body.classList.toggle('mode-sepia', active);
+        }
+
+        function changeAudioRate(val) {
+            duaConfig.audioRate = parseFloat(val);
+        }
+
+        function toggleSyllables(active) {
+            duaConfig.syllables = active;
+            const targets = document.querySelectorAll('.syllable-target');
+            targets.forEach(el => {
+                if (active) {
+                    if (el.innerText.includes("bufaba")) el.innerText = "bu-fa-ba";
+                    if (el.innerText.includes("inmaculado")) el.innerText = "in-ma-cu-la-do";
+                    if (el.innerText.includes("resignado")) el.innerText = "re-sig-na-do";
+                } else {
+                    if (el.innerText.includes("bu-fa-ba")) el.innerText = "bufaba";
+                    if (el.innerText.includes("in-ma-cu-la-do")) el.innerText = "inmaculado";
+                    if (el.innerText.includes("re-sig-na-do")) el.innerText = "resignado";
+                }
+            });
+        }
+
+        // CONTROL DE JUEGO Y NAVEGACIÓN
+        function prepareReading() {
+            const container = document.getElementById('reading-text-container');
+            const paragraphs = container.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                if (!p.querySelector('em') && !p.classList.contains('vocab-box')) {
+                    const words = p.innerText.split(' ');
+                    p.innerHTML = words.map(w => `<span>${w}</span>`).join(' ');
+                }
+            });
+        }
+
+        function startGame() {
+            window.speechSynthesis.cancel();
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function showReadingOnly() {
+            window.speechSynthesis.cancel();
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('reading-screen').style.display = 'block';
+            prepareReading();
+        }
+
+        function goHome() {
+            window.speechSynthesis.cancel();
+            location.reload();
+        }
+
+        function startQuestions() {
+            window.speechSynthesis.cancel();
+            document.getElementById('reading-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswering = true;
+            const q = questions[currentQuestionIndex];
+            document.getElementById('q-counter').innerText = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('progress').style.width = `${((currentQuestionIndex) / questions.length) * 100}%`;
+            document.getElementById('question-text').innerText = q.text;
+            document.getElementById('feedback-msg').innerText = "";
+            document.getElementById('next-btn').style.display = 'none';
+
+            // Ocultar la pista por defecto al cargar una nueva pregunta
+            const clueBox = document.getElementById('clue-box');
+            clueBox.innerText = "";
+            clueBox.style.display = 'none';
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            q.options.forEach((opt) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkChoice(btn, opt.correct);
+                container.appendChild(btn);
+            });
+        }
+
+        // MOSTRAR Y LEER LA PISTA ÚNICAMENTE AL PULSAR EL BOTÓN "💡 Pista"
+        function showAndSpeakClue() {
+            const q = questions[currentQuestionIndex];
+            if (!q.clue) return;
+
+            const clueBox = document.getElementById('clue-box');
+            clueBox.innerText = "💡 PISTA: " + q.clue;
+            clueBox.style.display = 'block';
+
+            // Reproducir por voz la pista al pulsar el botón
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance("Pista: " + q.clue);
+            utterance.lang = 'es-ES';
+            utterance.rate = duaConfig.audioRate;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function checkChoice(btnElement, isCorrect) {
+            if (!isAnswering) return;
+            isAnswering = false;
+            window.speechSynthesis.cancel();
+            const allBtns = document.querySelectorAll('.option-btn');
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+                playFeedback(true, "¡Excelente!");
+                score++;
+            } else {
+                btnElement.classList.add('wrong');
+                playFeedback(false, "Sigue intentándolo.");
+                questions[currentQuestionIndex].options.forEach((opt, i) => {
+                    if (opt.correct) allBtns[i].classList.add('correct');
+                });
+            }
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function playFeedback(isSuccess, text) {
+            const msg = document.getElementById('feedback-msg');
+            msg.innerText = text + (isSuccess ? " 🌟" : "");
+            msg.style.color = isSuccess ? "var(--green-ok)" : "var(--red-bad)";
+
+            if (!duaConfig.lowStimulus) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'es-ES';
+                u.rate = duaConfig.audioRate;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            if (!duaConfig.lowStimulus) {
+                startConfetti();
+            }
+        }
+
+        // LECTOR DE VOZ EN LECTURA
+        function readFullText() {
+            window.speechSynthesis.cancel();
+            const spans = document.querySelectorAll('#reading-text-container span');
+            const fullText = document.getElementById('reading-text-container').innerText;
+            const utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'es-ES';
+            utterance.rate = duaConfig.audioRate;
+            
+            let wordIdx = 0;
+            utterance.onboundary = (e) => {
+                if (e.name === 'word') {
+                    spans.forEach(s => s.classList.remove('reading-audio-highlight'));
+                    if (spans[wordIdx]) spans[wordIdx].classList.add('reading-audio-highlight');
+                    wordIdx++;
+                }
+            };
+            utterance.onend = () => spans.forEach(s => s.classList.remove('reading-audio-highlight'));
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function togglePauseReading() {
+            if (window.speechSynthesis.speaking) {
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    document.getElementById('pause-reading-btn').innerText = '⏸️';
+                } else {
+                    window.speechSynthesis.pause();
+                    document.getElementById('pause-reading-btn').innerText = '▶️';
+                }
+            }
+        }
+
+        function speakCurrentQuestion() {
+            window.speechSynthesis.cancel();
+            const q = questions[currentQuestionIndex];
+            let text = q.text + ". ";
+            q.options.forEach(o => text += o.text + ". ");
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'es-ES';
+            u.rate = duaConfig.audioRate;
+            window.speechSynthesis.speak(u);
+        }
+
+        // ANÁLISIS GRAMATICAL
+        function toggleGrammar(category) {
+            const spans = document.querySelectorAll('#reading-text-container span');
+            const className = getHighlightClass(category);
+            const words = grammarData[category];
+
+            spans.forEach(span => {
+                const cleanWord = span.innerText.toLowerCase().replace(/[.,:;¡!–-]/g, "");
+                if (words.includes(cleanWord)) {
+                    span.classList.toggle(className);
+                }
+            });
+        }
+
+        function getHighlightClass(cat) {
+            switch(cat) {
+                case 'verbs': return 'highlight-yellow';
+                case 'nouns': return 'highlight-red';
+                case 'adjectives': return 'highlight-blue-light';
+                case 'articles': return 'highlight-green-light';
+                case 'possessives': return 'highlight-gray';
+                case 'adverbs': return 'highlight-adverb-red';
+                case 'prepositions': return 'highlight-blue-strong';
+                default: return '';
+            }
+        }
+
+        function clearAllHighlights() {
+            const spans = document.querySelectorAll('#reading-text-container span');
+            const classes = ['highlight-yellow', 'highlight-red', 'highlight-blue-light', 'highlight-green-light', 'highlight-gray', 'highlight-adverb-red', 'highlight-blue-strong'];
+            spans.forEach(span => span.classList.remove(...classes));
+        }
+
+        // CONFETI
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 900; canvas.height = 600;
+            const particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * 900, y: Math.random() * 600,
+                    size: Math.random() * 6 + 4, color: '#FBC02D',
+                    sy: Math.random() * 3 + 2
+                });
+            }
+            function draw() {
+                ctx.clearRect(0,0,900,600);
+                particles.forEach(p => {
+                    p.y += p.sy; if (p.y > 600) p.y = -10;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
